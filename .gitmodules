@@ -1,0 +1,3 @@
+[submodule "mapless_mcl_py"]
+	path = mapless_mcl_py
+	url = git@github.com:cabraile/Mapless-MCL.git

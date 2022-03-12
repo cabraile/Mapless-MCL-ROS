@@ -1,0 +1,72 @@
+<launch>
+
+    <!-- PARAMETERS -->
+    <!-- =================== -->
+
+    <arg name="enable_viz"      value="true"/>
+    <arg name="dataset_dir"     value="/home/braile/Workspace/phd/datasets/carina/bag"/>
+    <arg name="map_path"        value="/home/braile/Workspace/phd/datasets/carina/sao_carlos_remake/roadmap.geojson"/>
+    <arg name="trajectory_path" value="/home/braile/Workspace/phd/datasets/carina/sao_carlos_remake/virtual_trajectories/1/virtual_trajectory.geojson"/>
+    <arg name="frame"           value="base_link"/>
+    <arg name="n_particles"     value="10"/>
+
+    <!-- DRIVERS -->
+    <!-- =================== -->
+    <param name="/use_sim_time" value="true" />
+    <arg name="odom_topic"  value="/stereo/odometry"/>
+    <arg name="camera_type" value="narrow"/>
+    <node type="run_bags.py" name="run_bags" pkg="mapless_mcl_ros_demos" args="--pause --dataset_dir $(arg dataset_dir)" output="screen"/>
+
+    <!-- Transforms -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_imu"             args="0 0 0 0 0 0 1 base_link imu" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_gps"             args="0.19 0.0 0.65 0 0 0 base_link gps" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_velodyne"        args="0.98 0.0 1.057 3.1005 0 0 base_link velodyne" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_bumblebee"          args="0.98 0.0 0.87 -1.57 0.0 -1.57 base_link bumblebee" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_base_footprint"  args="0 0 -1 0 0 0 1 base_link base_footprint" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="bumbleblee_to_stereo"         args="0 0  0 0 0 0 1 bumblebee stereo" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="imu_to_xsens"                 args="0 0 0 0 0 0 1 imu xsens" />
+
+    <!-- Stereo camera drivers -->
+    <include file="$(find split_rectify_stereo)/launch/SplitRectify.launch" pass_all_args="true"/>
+    <node name="stereo_pointcloud" pkg="stereo_image_proc" type="stereo_image_proc" >
+        <remap from="left/image_raw"    to="/carina/driver/stereo/$(arg camera_type)/left/raw"/>
+        <remap from="left/camera_info"  to="/carina/driver/stereo/$(arg camera_type)/left/camera_info"/>
+        <remap from="right/image_raw"   to="/carina/driver/stereo/$(arg camera_type)/right/raw"/>
+        <remap from="right/camera_info" to="/carina/driver/stereo/$(arg camera_type)/right/camera_info"/>
+        <param name="prefilter_size" value="9"/>
+        <param name="prefilter_cap" value="31"/>
+        <param name="correlation_window_size" value="31"/>
+        <param name="min_disparity" value="0"/>
+        <param name="disparity_range" value="8"/>
+        <param name="specke_size" value="100"/>
+    </node>
+    
+    <!-- PERCEPTION -->
+    <!-- =================== -->
+    <node pkg="rtabmap_ros" type="stereo_odometry" name="stereo_odometry" clear_params="true" args="" launch-prefix="">
+        <remap from="left/image_rect"        to="/carina/driver/stereo/$(arg camera_type)/left/raw"/>
+        <remap from="left/camera_info"       to="/carina/driver/stereo/$(arg camera_type)/left/camera_info"/>
+        <remap from="right/image_rect"       to="/carina/driver/stereo/$(arg camera_type)/right/raw"/>
+        <remap from="right/camera_info"      to="/carina/driver/stereo/$(arg camera_type)/right/camera_info"/>
+        <remap from="odom"                   to="$(arg odom_topic)"/>
+
+        <param name="frame_id"                    type="string" value="base_link"/>
+        <param name="odom_frame_id"               type="string" value="odom"/>
+        <param name="publish_tf"                  type="bool"   value="false"/>
+        <param name="wait_for_transform_duration" type="double" value="0.2"/>
+        <param name="approx_sync"                 type="bool"   value="false"/>
+        <param name="subscribe_rgbd"              type="bool"   value="false"/>
+        <param name="guess_min_translation"       type="double" value="0"/>
+        <param name="guess_min_rotation"          type="double" value="0"/>
+        <param name="expected_update_rate"        type="double" value="0"/>
+        <param name="max_update_rate"             type="double" value="0"/>
+        <param name="keep_color"                  type="bool"   value="true"/>
+    </node>
+
+    <include file="$(find mapless_mcl_ros)/launch/run.launch" pass_all_args="true"/>
+
+    <!-- VISUALIZATION -->
+    <!-- =================== -->
+    <node if="$(arg enable_viz)" name="rviz" type="rviz" pkg="rviz" args="-d $(find mapless_mcl_ros_demos)/rviz/carina.rviz"/>
+
+</launch>

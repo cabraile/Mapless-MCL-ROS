@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>mapless_mcl_ros_demos</name>
+  <version>0.0.0</version>
+  <description>.</description>
+  <maintainer email="carlos.andre.prze@outlook.com">André Przewodowski</maintainer>
+  <license>TODO: License declaration</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>split_rectify_stereo</exec_depend>
+  <exec_depend>stereo_image_proc</exec_depend>
+  <exec_depend>rtabmap_ros</exec_depend>
+</package>
