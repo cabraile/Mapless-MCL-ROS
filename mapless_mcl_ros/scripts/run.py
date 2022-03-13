@@ -39,7 +39,8 @@ class DRNode:
     def load_args(self) -> None:
         self.n_init_particles   = rospy.get_param("~particles")
         self.frame              = rospy.get_param("~frame", "base_footprint")
-        self.flag_publish_tf    = rospy.get_param("~publish_tf", False)
+        self.flag_publish_map_to_frame_tf    = rospy.get_param("~publish_map_to_frame_tf", False)
+        self.flag_publish_utm_to_map_tf    = rospy.get_param("~publish_utm_to_map_tf", False)
         self.path_to_map        = os.path.abspath( rospy.get_param("~map_path") )
         self.path_to_trajectory = os.path.abspath( rospy.get_param("~trajectory_path") ) # TODO: pass as a service
 
@@ -48,8 +49,6 @@ class DRNode:
         self.particles_publisher= rospy.Publisher("/mcl/drmcl/particles", PointCloud2, queue_size=10)
         self.state_publisher    = rospy.Publisher("/mcl/drmcl/pose", Odometry, queue_size=1)
         self.transform_broadcaster = tf2_ros.TransformBroadcaster()
-        #self.tf_buffer          = tf2_ros.Buffer()
-        #self.tf_listener        = tf2_ros.TransformListener(self.tf_buffer)
 
     def setup(self) -> None:        
         # Load the map
@@ -81,8 +80,7 @@ class DRNode:
         covariance = np.array( msg.pose.covariance ).reshape(6,6)
         # TODO: use full translation and rotation as input
         control_cmd = np.array( ( translation.x, translation.y ) )
-        #covariance = covariance[:2,:2] 
-        covariance = np.diag([0.1,0.1])
+        covariance = np.diag([1.0,1.0])
         self.mcl.predict(control_cmd, covariance)
 
     #==========================================================================
@@ -91,11 +89,7 @@ class DRNode:
     #==========================================================================
 
     def publish(self) -> None:
-        self.publish_state()
-        self.publish_particles()
-        self.publish_tf()
 
-    def publish_state(self,) -> None:
         # Map origin
         origin = self.origin
 
@@ -104,9 +98,16 @@ class DRNode:
         mean = mean_list[0] # TODO: iterate for each trajectory
         covariance = covariance_list[0]
 
+        self.publish_state(mean, covariance, origin)
+        self.publish_particles(origin)
+        self.publish_tf(mean, origin)
+
+    def publish_state(self, mean : Point, covariance : np.ndarray, origin : Point) -> None:
+
         msg = Odometry()
         # Fill metadata
-        msg.header.frame_id = self.frame
+        msg.header.frame_id = "map"
+        msg.child_frame_id = self.frame
         msg.header.stamp = rospy.Time.now()
         # Fill position
         msg.pose.pose.position.x = mean.x - origin.x
@@ -124,29 +125,28 @@ class DRNode:
         # Publish!
         self.state_publisher.publish(msg)
         
-    def publish_tf(self,) -> None:
+    def publish_tf(self, mean : Point, origin : Point) -> None:
 
-        # REPLACE THIS BY A STATIC BROADCASTER
-        # Publish utm->map transform
-        origin = self.origin
-        translation = np.array([origin.x, origin.y, 0])
-        rotation = np.array([1.0, 0.0, 0.0, 0.0])
-        tf_from_utm_to_map = tf_from_arrays(translation, rotation, "utm", "map")
-        tf_from_utm_to_map.header.stamp = rospy.Time.now()
-        self.transform_broadcaster.sendTransform(tf_from_utm_to_map)
+        if self.flag_publish_utm_to_map_tf:
+            # REPLACE THIS BY A STATIC BROADCASTER
+            # Publish utm->map transform
+            translation = np.array([origin.x, origin.y, 0])
+            rotation = np.array([1.0, 0.0, 0.0, 0.0])
+            tf_from_utm_to_map = tf_from_arrays(translation, rotation, "utm", "map")
+            tf_from_utm_to_map.header.stamp = rospy.Time.now()
+            self.transform_broadcaster.sendTransform(tf_from_utm_to_map)
 
         # Publish map->frame transform
-        mean_list, _ = self.mcl.get_position([self.trajectory]) # TODO: provide more trajectories
-        mean = mean_list[0] # TODO: iterate for each trajectory
-        translation = np.array([ mean.x - origin.x, mean.y - origin.y, 0.0 ])
-        rotation = rotation # TODO: fill with a true rotation
-        tf_from_map_to_frame = tf_from_arrays(translation, rotation, "map", self.frame)
-        tf_from_map_to_frame.header.stamp = rospy.Time.now()
-        self.transform_broadcaster.sendTransform(tf_from_map_to_frame)
+        if self.flag_publish_map_to_frame_tf:
+            translation = np.array([ mean.x - origin.x, mean.y - origin.y, 0.0 ])
+            rotation = rotation # TODO: fill with a true rotation
+            rospy.loginfo(mean)
+            tf_from_map_to_frame = tf_from_arrays(translation, rotation, "map", self.frame)
+            tf_from_map_to_frame.header.stamp = rospy.Time.now()
+            self.transform_broadcaster.sendTransform(tf_from_map_to_frame)
         
-    def publish_particles(self,) -> None:
+    def publish_particles(self, origin : Point) -> None:
         points = self.mcl.get_particles([self.trajectory])
-        origin = self.origin
         
         # The particles' point cloud.
         point_cloud_array = np.zeros( 

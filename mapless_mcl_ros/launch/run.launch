@@ -1,6 +1,7 @@
 <launch>
   <arg name="odom_topic"    default="/odom"/>
-  <arg name="publish_tf"          default="True"/>
+  <arg name="publish_map_to_frame_tf"          default="false"/>
+  <arg name="publish_utm_to_map_tf"          default="true"/>
   <arg name="n_particles"         default="10"/>
   <arg name="reference_frame_id"  default="base_link"/>
   <arg name="map_path"            default=""/>
@@ -13,7 +14,8 @@
 
   <node name="drmcl_node" type="run.py" pkg="mapless_mcl_ros" output="screen">
     <param name="particles"         value="$(arg n_particles)"/>
-    <param name="publish_tf"        value="$(arg publish_tf)"/>
+    <param name="publish_map_to_frame_tf"     value="$(arg publish_map_to_frame_tf)"/>
+    <param name="publish_utm_to_map_tf"       value="$(arg publish_utm_to_map_tf)"/>
     <param name="frame"             value="$(arg reference_frame_id)"/>
     <param name="map_path"          value="$(arg map_path)"/>
     <param name="trajectory_path"   value="$(arg trajectory_path)"/>
