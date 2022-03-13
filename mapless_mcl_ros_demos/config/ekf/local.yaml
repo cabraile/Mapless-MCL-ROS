@@ -8,6 +8,7 @@ odom_frame: odom
 world_frame: odom
 two_d_mode: true
 
+imu0: /mti/sensor/imu
 imu0_config: [false, false, false, # X Y Z
   false, false, true, # roll pitch yaw
   false, false, false, # X' Y' Z'

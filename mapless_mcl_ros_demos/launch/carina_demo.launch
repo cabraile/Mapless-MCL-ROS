@@ -18,6 +18,13 @@
     <arg name="camera_type" value="narrow"/>
     <node type="run_bags.py" name="run_bags" pkg="mapless_mcl_ros_demos" args="--pause --dataset_dir $(arg dataset_dir)" output="screen"/>
 
+    <!-- GPS -->
+    <node type="carina_demo_gps_fixer.py" name="gps_fixer" pkg="mapless_mcl_ros_demos"/>
+    <node type="navsat_fix_to_map_odometry.py" name="gps_to_odometry" pkg="mapless_mcl_ros_demos">
+        <remap from="/navsat/fix" to="/carina/driver/septentrio/fix_corrected"/>
+        <param name="trajectory_path" value="$(arg trajectory_path)"/>
+    </node>
+
     <!-- Transforms -->
     <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_imu"             args="0 0 0 0 0 0 1 base_link imu" />
     <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_gps"             args="0.19 0.0 0.65 0 0 0 base_link gps" />
@@ -69,17 +76,27 @@
     <include file="$(find mapless_mcl_ros)/launch/run.launch" pass_all_args="true"/>
     
     <!-- FUSION -->
-    <node name="local_ekf_node" pkg="robot_localization" type="ekf_localization_node"> 
-        <param name="imu0"                  value="$(arg imu_topic)"/>
-        <param name="publish_tf"            value="true"/>
-        <rosparam command="load"            file="$(find mapless_mcl_ros_demos)/config/ekf/local_ekf.yaml" />
+    <node name="local_ekf_node" pkg="robot_localization" type="ekf_localization_node">
+        <param name="publish_tf"            value=" true"/>
+        <rosparam command="load"            file="$(find mapless_mcl_ros_demos)/config/ekf/local.yaml" />
         <remap from="/odometry/filtered"    to="/fusion/local" />
     </node>
-    <node name="global_ekf_node" pkg="robot_localization" type="ekf_localization_node"> 
-        <param name="imu0"                  value="$(arg imu_topic)"/>
-        <param name="publish_tf"            value="true"/>
-        <rosparam command="load"            file="$(find mapless_mcl_ros_demos)/config/ekf/global_ekf.yaml" />
+    <node name="global_ekf_node" pkg="robot_localization" type="ekf_localization_node">
+        <param name="publish_tf"            value="false"/>
+        <rosparam command="load"            file="$(find mapless_mcl_ros_demos)/config/ekf/global.yaml" />
         <remap from="/odometry/filtered"    to="/fusion/global" />
+    </node>
+    <node name="groundtruth_ekf_node" pkg="robot_localization" type="ekf_localization_node" output="screen">
+        <param name="publish_tf"            value="true"/>
+        <rosparam command="load"            file="$(find mapless_mcl_ros_demos)/config/ekf/groundtruth.yaml" />
+        <remap from="/odometry/filtered"    to="/fusion/groundtruth" />
+    </node>
+
+
+    <!-- GROUNDTRUTH AND COMPARISON -->
+    <!-- ========================== -->
+    <node name="results_report" pkg="mapless_mcl_ros_demos" type="groundtruth_comparison.py" output="screen">
+        <param name="output_path" value="/home/braile/Desktop/results.csv"/>
     </node>
 
     <!-- VISUALIZATION -->

@@ -80,7 +80,7 @@ class DRNode:
         covariance = np.array( msg.pose.covariance ).reshape(6,6)
         # TODO: use full translation and rotation as input
         control_cmd = np.array( ( translation.x, translation.y ) )
-        covariance = np.diag([1.0,1.0])
+        covariance = np.diag([1.,1.])
         self.mcl.predict(control_cmd, covariance)
 
     #==========================================================================

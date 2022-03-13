@@ -1,14 +1,15 @@
 # Use the robot_localization package http://docs.ros.org/en/melodic/api/robot_localization/html/state_estimation_nodes.html
 
 # General args
-frequency: 10
-sensor_timeout: 2
+frequency: 100
+sensor_timeout: 1
 base_link_frame: base_link
 odom_frame: odom
 world_frame: map
 map_frame: map
 two_d_mode: true
 
+imu0: /mti/sensor/imu
 imu0_config: [false, false, false, # X Y Z
   false, false, false, # roll pitch yaw
   false, false, false, # X' Y' Z'

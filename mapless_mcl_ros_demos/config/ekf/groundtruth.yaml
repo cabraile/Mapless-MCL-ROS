@@ -1,0 +1,40 @@
+# Use the robot_localization package http://docs.ros.org/en/melodic/api/robot_localization/html/state_estimation_nodes.html
+
+# General args
+frequency: 30
+sensor_timeout: 1.0
+base_link_frame: base_link
+odom_frame: odom
+world_frame: map
+map_frame: map
+two_d_mode: true
+
+imu0: /mti/sensor/imu
+imu0_config: [false, false, false, # X Y Z
+  false, false, false, # roll pitch yaw
+  false, false, false, # X' Y' Z'
+  false, false, true, # roll' pitch' yaw'
+  true, true, false] # X'' Y'' Z''
+imu0_remove_gravitational_acceleration: true # Must remove g-force influence from acceleration vector!!!
+imu0_queue_size: 100
+
+odom0: /stereo/odometry
+odom0_config: [
+  false, false, false, # X Y Z
+  false, false, false, # roll pitch yaw
+  true, true, false, # X' Y' Z'
+  false, false, true, # roll' pitch' yaw'
+  true, true, false] # X'' Y'' Z''
+odom0_differential: false
+odom0_queue_size: 3
+odom0_relative: false
+
+odom1: /navsat/odometry
+odom1_config: [true, true, false, # X Y Z
+  false, false, false, # roll pitch yaw
+  false, false, false, # X' Y' Z'
+  false, false, false, # roll' pitch' yaw'
+  false, false, false] # X'' Y'' Z''
+odom1_differential: false
+odom1_queue_size: 100
+odom1_relative: false
