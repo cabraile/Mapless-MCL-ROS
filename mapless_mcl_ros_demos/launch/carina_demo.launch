@@ -73,6 +73,14 @@
         <param name="keep_color"                  type="bool"   value="true"/>
     </node>
 
+    <!--include file="$(find detectron2_ros)/launch/detectron2_ros.launch" pass_all_args="true">
+        <arg name="image_topic" value="/carina/driver/stereo/$(arg camera_type)/left/raw"/>
+        <arg name="camera_info_topic" value="/carina/driver/stereo/$(arg camera_type)/left/camera_info"/>
+        <arg name="process_scale" default="1.0"/>
+    </include-->
+
+    <include file="$(find darknet_ros)/launch/yolo_v3.launch" pass_all_args="true"/>
+
     <include file="$(find mapless_mcl_ros)/launch/run.launch" pass_all_args="true"/>
     
     <!-- FUSION -->
@@ -96,7 +104,7 @@
     <!-- GROUNDTRUTH AND COMPARISON -->
     <!-- ========================== -->
     <node name="results_report" pkg="mapless_mcl_ros_demos" type="groundtruth_comparison.py" output="screen">
-        <param name="output_path" value="/home/braile/Desktop/results.csv"/>
+        <param name="output_path" value="/home/braile/Workspace/phd/datasets/carina/results/results.csv"/>
     </node>
 
     <!-- VISUALIZATION -->
