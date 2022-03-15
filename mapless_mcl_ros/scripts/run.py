@@ -61,10 +61,12 @@ class DRNode:
 
     def setup(self) -> None:        
         # Load the map
+        rospy.loginfo("Loading HL map.")
         hlmap = HLMap()
         hlmap.load(self.path_to_map)
         
         # Load the initial trajectory
+        rospy.loginfo("Loading trajectory.")
         trajectory = Trajectory(self.path_to_trajectory)
         self.set_origin(trajectory.get_origin())
 
@@ -72,6 +74,8 @@ class DRNode:
         self.mcl = DRMCL()
         self.mcl.assign_map(hlmap)
         self.mcl.assign_trajectory(trajectory)
+        rospy.loginfo("Loading trajectory intersections.")
+        self.mcl.load_trajectory_intersections()
         self.mcl.sample(n_particles = self.n_init_particles)
 
         if self.flag_publish_utm_to_map_tf:
