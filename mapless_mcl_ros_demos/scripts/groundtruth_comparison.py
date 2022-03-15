@@ -28,8 +28,8 @@ def mahalanobis_distance(ref : Odometry, comp : Odometry) -> float:
 
 def angular_difference(P1 : Odometry, P2 : Odometry) -> float:
     # Retrieve the orientation quaternions
-    q1 = ( P1.pose.pose.orientation.w, P1.pose.pose.orientation.x, P1.pose.pose.orientation.y, P1.pose.pose.orientation.z )
-    q2 = ( P2.pose.pose.orientation.w, P2.pose.pose.orientation.x, P2.pose.pose.orientation.y, P2.pose.pose.orientation.z )
+    q1 = ( P1.pose.pose.orientation.x, P1.pose.pose.orientation.y, P1.pose.pose.orientation.z, P1.pose.pose.orientation.w )
+    q2 = ( P2.pose.pose.orientation.x, P2.pose.pose.orientation.y, P2.pose.pose.orientation.z, P2.pose.pose.orientation.w )
     # Convert quaternions to RPY
     _,_, angle1 = euler_from_quaternion(q1)
     _,_, angle2 = euler_from_quaternion(q2)
@@ -37,7 +37,7 @@ def angular_difference(P1 : Odometry, P2 : Odometry) -> float:
     uv1 = np.array( [ np.cos(angle1), np.sin(angle1) ] )
     uv2 = np.array( [ np.cos(angle2), np.sin(angle2) ] )
     # Angle between orientation vectors
-    angle_diff = np.arccos( uv1 @ uv2 )
+    angle_diff = np.arccos( uv1 @ uv2.T )
     return angle_diff
 
 class Node:
@@ -98,8 +98,8 @@ class Node:
             # Compute Euclidean distance
             euc_distance = euclidean_distance(groundtruth, message)
 
-            # Compute Mahalanobis distance
-            mah_distance = mahalanobis_distance(groundtruth, message)
+            # Compute Mahalanobis distance from the groundtruth to the message
+            mah_distance = mahalanobis_distance(message, groundtruth)
 
             # Compute angular difference
             ang_difference = angular_difference(groundtruth, message)

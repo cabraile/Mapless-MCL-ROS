@@ -1,11 +1,13 @@
+#include <cmath>
 #include "ros/ros.h"
 #include "nav_msgs/Odometry.h"
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
 #include "tf/transform_datatypes.h"
-
 class RelativeOffsetNode {
 
 private:
+    const double MAX_DELTA_SIZE = 10.0;
+
     ros::Publisher pub_;
     ros::Subscriber sub_;
 
@@ -44,10 +46,17 @@ public:
         
         // Compute the relative transform between both poses
         tf::Transform transform = pose_last_.inverseTimes(pose);
-
+        double delta_translation = transform.getOrigin().length();
+        double delta_rotation = transform.getRotation().length();
+        // Odometry might have been lost...
+        if ( ( delta_rotation < 1e-2 ) || (delta_translation > MAX_DELTA_SIZE ) ) {
+            flag_received_once_ = false;
+            return ;
+        }
         // Store the results on the delta_pose object, which will be published
         geometry_msgs::PoseWithCovarianceStamped delta_pose;
         tf::poseTFToMsg(transform, delta_pose.pose.pose);
+        
         delta_pose.header = odom->header;
 
         // Assign covariance between previous and current frames

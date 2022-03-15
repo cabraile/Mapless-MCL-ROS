@@ -6,6 +6,7 @@ import sys
 def parse_args() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset_dir", required=True)
+    parser.add_argument("--start_at", required=True)
     parser.add_argument("--pause", action="store_true")
     return parser.parse_known_args()[0]
 
@@ -14,7 +15,7 @@ def main( ) -> int:
     dataset_dir = os.path.abspath(args.dataset_dir)
     parameters = {
         "clock" : True,
-        "start" : 0,
+        "start" : args.start_at,
         "pause" : args.pause
     }
 

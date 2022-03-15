@@ -14,7 +14,7 @@ class Node:
         self.navsat_fix_subscriber = rospy.Subscriber("/carina/driver/septentrio/fix", NavSatFix, self.subscriber_navsat_fix, queue_size=10)
         self.navsat_fix_publisher = rospy.Publisher("/carina/driver/septentrio/fix_corrected", NavSatFix, queue_size=10)
 
-        self.default_confidence_xy = 0.04 # meters - RTK
+        self.default_confidence_xy = 0.1
         self.default_confidence_altitude = 10.0 # meters
 
     def subscriber_navsat_fix(self, msg : NavSatFix):
