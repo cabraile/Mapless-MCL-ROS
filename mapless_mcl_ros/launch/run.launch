@@ -6,6 +6,8 @@
   <arg name="reference_frame_id"  default="base_link"/>
   <arg name="map_path"            default=""/>
   <arg name="trajectory_path"     default=""/>
+  <arg name="model_sensitivity"         default=""/>
+  <arg name="model_false_positive_rate" default=""/>
 
   <node name="relative_offset_node" type="relative_offset_transform" pkg="mapless_mcl_ros" output="screen">
     <remap from="/relative/pose" to="/odometry/offset"/>
@@ -18,6 +20,9 @@
     <param name="publish_utm_to_map_tf"       value="$(arg publish_utm_to_map_tf)"/>
     <param name="frame"             value="$(arg reference_frame_id)"/>
     <param name="map_path"          value="$(arg map_path)"/>
+    <param name="trajectory_path"   value="$(arg trajectory_path)"/>
+    <param name="model_sensitivity" value="$(arg model_sensitivity)"/>
+    <param name="model_false_positive_rate" value="$(arg model_false_positive_rate)"/>
     <param name="trajectory_path"   value="$(arg trajectory_path)"/>
   </node>
 

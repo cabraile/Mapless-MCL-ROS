@@ -2,7 +2,7 @@
 
 # General args
 frequency: 30
-sensor_timeout: 1.0
+sensor_timeout: 0.4
 base_link_frame: base_link
 odom_frame: odom
 world_frame: map
