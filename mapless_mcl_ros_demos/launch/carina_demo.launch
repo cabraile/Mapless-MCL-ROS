@@ -6,9 +6,9 @@
     <arg name="enable_viz"      value="true"/>
     <arg name="dataset_dir"     value="/home/braile/Workspace/phd/datasets/carina/bag"/>
     <arg name="map_path"        value="/home/braile/Workspace/phd/datasets/carina/sao_carlos_remake/roadmap.geojson"/>
-    <arg name="trajectory_path" value="/home/braile/Workspace/phd/datasets/carina/sao_carlos_remake/virtual_trajectories/1/virtual_trajectory_reduced.geojson"/>
+    <arg name="trajectory_path" value="/home/braile/Workspace/phd/datasets/carina/sao_carlos_remake/trajectories/subset.geojson"/>
     <arg name="frame"           value="base_link"/>
-    <arg name="n_particles"     value="50"/>
+    <arg name="n_particles"     value="100"/>
     <arg name="bags_start_at"         default="160.0"/>
     <arg name="model_sensitivity"         default="0.9"/>
     <arg name="model_false_positive_rate" default="0.15"/>
