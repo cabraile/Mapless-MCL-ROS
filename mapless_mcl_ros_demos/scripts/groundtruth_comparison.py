@@ -85,7 +85,7 @@ class Node:
 
     def compare(self) -> None:
 
-        for category in ["gps_only", "drmcl_fused", "drmcl_raw"]:
+        for category in ["gps_only", "drmcl_fused", "drmcl_raw", "odometry_only"]:
             groundtruth = self.messages["groundtruth"]
             # Check if received groundtruth
             if groundtruth is None:
@@ -114,7 +114,7 @@ class Node:
                 "groundtruth_x" : groundtruth.pose.pose.position.x,
                 "groundtruth_y" : groundtruth.pose.pose.position.y, 
                 "estimated_x" : message.pose.pose.position.x,
-                "estimated_y" : message.pose.pose.position.x,
+                "estimated_y" : message.pose.pose.position.y,
             }
             self.entries.append(entry)
 
