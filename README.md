@@ -33,3 +33,9 @@ Demos
 
 Docker
 =============
+If you do not want to set 
+
+One liner image build command:
+```bash
+docker build -t maples_mcl_ros:latest -f docker/demo/Dockerfile .
+```
