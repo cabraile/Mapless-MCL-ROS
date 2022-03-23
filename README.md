@@ -13,6 +13,39 @@ For more details on the method, check out our [paper](resources/paper.pdf), whic
 Setup
 =============
 
+Ubuntu
+-------
+
+If you intend on running this project in a docker container, skip to the docker section. On the other hand, you can still peek the dockerfiles (under `./docker`) for guidance on the setup.
+
+
+**Make sure you have ROS1 installed**
+    - Install ROS1 in your machine - we recommend installing the [Noetic](http://wiki.ros.org/noetic/Installation/Ubuntu) version.
+**Prepare your catkin workspace**
+    - `cd` to the directory from which you will use as a catkin workspace.
+- **Python 3**.
+- `darknet_ros`. Clone their 
+
+**Optional (for running the demonstrations)**:
+    - Download the ROS bag files [here](https://drive.google.com/drive/folders/19K-1EjE-EJwqM4iHRPnX-oLn--NlU0lt?usp=sharing);
+    - Download the road map file [here](https://drive.google.com/file/d/1BPNlTLTExGXqM3NVAV280eHUFdWGb9p0/view?usp=sharing);
+    - Download the trajectory file [here](https://drive.google.com/file/d/12sEUPd4Ntv2hiyNpk6SLxLV2rPuJuXH6/view?usp=sharing);
+    - Download the `split_rectify_stereo` package [here](https://drive.google.com/file/d/1cig26bATuz5g-EIiUT-YCdjLovWB4RuB/view?usp=sharing).
+
+
+Docker
+-------
+We prepared a docker machine for running this project's  nodes in case you do not want to set your whole machine up.
+
+One liner image build command:
+```bash
+docker build -t maples_mcl_ros:latest -f docker/demo/Dockerfile .
+```
+Or, instead, if you want to include the demo files:
+```bash
+docker build -t maples_mcl_ros:latest -f docker/demo/Dockerfile .  --build-arg INCLUDE_DEMO=true
+```
+
 How to use
 =============
 
@@ -30,12 +63,3 @@ Run
 
 Demos
 =============
-
-Docker
-=============
-If you do not want to set 
-
-One liner image build command:
-```bash
-docker build -t maples_mcl_ros:latest -f docker/demo/Dockerfile .
-```

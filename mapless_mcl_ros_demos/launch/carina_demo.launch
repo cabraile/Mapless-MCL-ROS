@@ -4,9 +4,9 @@
     <!-- =================== -->
 
     <arg name="enable_viz"      value="true"/>
-    <arg name="dataset_dir"     value="/home/braile/Workspace/phd/datasets/carina/bag"/>
-    <arg name="map_path"        value="/home/braile/Workspace/phd/datasets/carina/sao_carlos_remake/roadmap.geojson"/>
-    <arg name="trajectory_path" value="/home/braile/Workspace/phd/datasets/carina/sao_carlos_remake/trajectories/subset.geojson"/>
+    <arg name="dataset_dir"     value="/bags"/>
+    <arg name="map_path"        value="/data/roadmap.geojson"/>
+    <arg name="trajectory_path" value="/data/trajectory.geojson"/>
     <arg name="frame"           value="base_link"/>
     <arg name="n_particles"     value="100"/>
     <arg name="bags_start_at"         default="160.0"/>
