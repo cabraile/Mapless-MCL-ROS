@@ -18,24 +18,34 @@ Ubuntu
 
 If you intend on running this project in a docker container, skip to the docker section. On the other hand, you can still peek the dockerfiles (under `./docker`) for guidance on the setup.
 
+**GPU**
+- Unfortunately, this project **REQUIRES** GPU for running the YOLO detection. Make sure you have the NVIDIA drivers installed and CUDA.
 
-**Make sure you have ROS1 installed**
-    - Install ROS1 in your machine - we recommend installing the [Noetic](http://wiki.ros.org/noetic/Installation/Ubuntu) version.
+**ROS**
+- Install ROS1 in your machine - we recommend installing the [Noetic](http://wiki.ros.org/noetic/Installation/Ubuntu) version.
 **Prepare your catkin workspace**
-    - `cd` to the directory from which you will use as a catkin workspace.
-- **Python 3**.
-- `darknet_ros`. Clone their 
+- `cd` to the directory from which you will use as a catkin workspace.
+
+**Python 3**. 
+- Make sure you have `python>=3.7` for running this project. 
+- Python 2 is definitively out of question in this project.
+
+`darknet_ros`. 
+- **Inside your carkin workspace's 'src':** Clone their repository recursively (`git clone --recursive https://github.com/leggedrobotics/darknet_ros`).
+
+`mapless_mcl_ros`. 
+- **Inside your carkin workspace's 'src':** Clone this repository recursively (`git clone --recursive https://github.com/cabraile/Mapless-MCL-ROS`)
 
 **Optional (for running the demonstrations)**:
-    - Download the ROS bag files [here](https://drive.google.com/drive/folders/19K-1EjE-EJwqM4iHRPnX-oLn--NlU0lt?usp=sharing);
-    - Download the road map file [here](https://drive.google.com/file/d/1BPNlTLTExGXqM3NVAV280eHUFdWGb9p0/view?usp=sharing);
-    - Download the trajectory file [here](https://drive.google.com/file/d/12sEUPd4Ntv2hiyNpk6SLxLV2rPuJuXH6/view?usp=sharing);
-    - Download the `split_rectify_stereo` package [here](https://drive.google.com/file/d/1cig26bATuz5g-EIiUT-YCdjLovWB4RuB/view?usp=sharing).
+- Download the ROS bag files [here](https://drive.google.com/drive/folders/19K-1EjE-EJwqM4iHRPnX-oLn--NlU0lt?usp=sharing);
+- Download the road map file [here](https://drive.google.com/file/d/1BPNlTLTExGXqM3NVAV280eHUFdWGb9p0/view?usp=sharing);
+- Download the trajectory file [here](https://drive.google.com/file/d/12sEUPd4Ntv2hiyNpk6SLxLV2rPuJuXH6/view?usp=sharing);
+- Download the `split_rectify_stereo` package [here](https://drive.google.com/file/d/1cig26bATuz5g-EIiUT-YCdjLovWB4RuB/view?usp=sharing).
 
 
 Docker
 -------
-We prepared a docker machine for running this project's  nodes in case you do not want to set your whole machine up.
+We prepared dockerfiles for running this project's nodes in case you do not want to set your whole machine up.
 
 One liner image build command:
 ```bash

@@ -3,12 +3,12 @@
     <!-- PARAMETERS -->
     <!-- =================== -->
 
-    <arg name="enable_viz"      value="true"/>
-    <arg name="dataset_dir"     value="/bags"/>
-    <arg name="map_path"        value="/data/roadmap.geojson"/>
-    <arg name="trajectory_path" value="/data/trajectory.geojson"/>
-    <arg name="frame"           value="base_link"/>
-    <arg name="n_particles"     value="100"/>
+    <arg name="enable_viz"      default="true"/>
+    <arg name="dataset_dir"     default="/bags"/>
+    <arg name="map_path"        default="/data/roadmap.geojson"/>
+    <arg name="trajectory_path" default="/data/trajectory.geojson"/>
+    <arg name="frame"           default="base_link"/>
+    <arg name="n_particles"     default="100"/>
     <arg name="bags_start_at"         default="160.0"/>
     <arg name="model_sensitivity"         default="0.9"/>
     <arg name="model_false_positive_rate" default="0.15"/>
@@ -19,7 +19,7 @@
     <arg name="odom_topic"  value="/stereo/odometry"/>
     <arg name="imu_topic" value="/mti/sensor/imu"/>
     <arg name="camera_type" value="narrow"/>
-    <node type="run_bags.py" name="run_bags" pkg="mapless_mcl_ros_demos" args="--pause --dataset_dir $(arg dataset_dir) --start_at $(arg bags_start_at)" output="screen"/>
+    <node type="run_bags.py" name="run_bags" pkg="mapless_mcl_ros_demos" args="--dataset_dir $(arg dataset_dir) --start_at $(arg bags_start_at)" output="screen"/>
 
     <!-- GPS -->
     <node type="carina_demo_gps_fixer.py" name="gps_fixer" pkg="mapless_mcl_ros_demos"/>

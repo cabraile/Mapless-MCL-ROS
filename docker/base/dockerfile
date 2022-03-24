@@ -27,3 +27,7 @@ WORKDIR ${CATKIN_WS}
 
 RUN catkin config --extend /opt/ros/noetic && catkin init && catkin build -DCMAKE_BUILD_TYPE=Release
 RUN echo 'source "${CATKIN_WS}/devel/setup.bash"' >> ~/.bashrc
+
+# Replace the entrypoint
+COPY ./docker/entrypoint.sh /ros_entrypoint.sh
+RUN ["chmod", "+x", "/ros_entrypoint.sh"]

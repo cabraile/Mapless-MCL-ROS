@@ -4,20 +4,17 @@ import subprocess
 import pathlib
 import os
 
-ENTRYPOINT_FILE_TEXT="""#!/bin/bash
-set -e
-
-# setup ros environment
-source "/opt/ros/noetic/setup.bash"
-source "${CATKIN_WS}/devel/setup.bash
-exec "$@"
-"""
-
 BASE_TEXT = """
 FROM ros:noetic-ros-base-focal
-
+    
 ARG DEBIAN_FRONTEND=noninteractive
 ENV CATKIN_WS /workspace
+
+# nvidia-container-runtime
+ENV NVIDIA_VISIBLE_DEVICES \
+    ${NVIDIA_VISIBLE_DEVICES:-all}
+ENV NVIDIA_DRIVER_CAPABILITIES \
+    ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
 
 # APT dependencies
 RUN apt update && apt install -y --no-install-recommends\
@@ -26,6 +23,8 @@ RUN apt update && apt install -y --no-install-recommends\
     python3 \
     python3-pip \
     python-is-python3 \
+    libgl1-mesa-glx \
+    libgl1-mesa-dri \
     ros-noetic-catkin \
     ros-noetic-rtabmap-ros \
     ros-noetic-stereo-image-proc \
@@ -68,6 +67,10 @@ WORKDIR ${CATKIN_WS}
 
 RUN catkin config --extend /opt/ros/noetic && catkin init && catkin build -DCMAKE_BUILD_TYPE=Release
 RUN echo 'source "${CATKIN_WS}/devel/setup.bash"' >> ~/.bashrc
+
+# Replace the entrypoint
+COPY ./docker/entrypoint.sh /ros_entrypoint.sh
+RUN ["chmod", "+x", "/ros_entrypoint.sh"]
 """
 
 def parse_args() -> argparse.Namespace:

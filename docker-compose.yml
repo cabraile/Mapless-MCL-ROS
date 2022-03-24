@@ -1,0 +1,19 @@
+services:
+  runner:
+    image: "mapless_mcl_ros:latest"
+    build: ./docker/demo/dockerfile
+    volumes:
+      - $BAGS_DIR:/bags
+      - $DATA_DIR:/data
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    environment:
+      - "DISPLAY=${DISPLAY}"
+    command: roslaunch mapless_mcl_ros_demos carina_demo.launch enable_viz:=false use_sim_time:=true
+    network_mode: "host"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
