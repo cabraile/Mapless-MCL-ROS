@@ -1,7 +1,6 @@
 services:
   runner:
     image: "mapless_mcl_ros:latest"
-    build: ./docker/demo/dockerfile
     volumes:
       - $BAGS_DIR:/bags
       - $DATA_DIR:/data
