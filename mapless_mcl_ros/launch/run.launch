@@ -1,13 +1,15 @@
 <launch>
-  <arg name="odom_topic"    default="/odom"/>
-  <arg name="publish_map_to_frame_tf"          default="false"/>
-  <arg name="publish_utm_to_map_tf"          default="true"/>
-  <arg name="n_particles"         default="10"/>
-  <arg name="reference_frame_id"  default="base_link"/>
   <arg name="map_path"            default=""/>
   <arg name="trajectory_path"     default=""/>
-  <arg name="model_sensitivity"         default=""/>
-  <arg name="model_false_positive_rate" default=""/>
+  <arg name="odom_topic"    default="/odom"/>
+  <arg name="n_particles"         default="10"/>
+  <arg name="model_sensitivity"         default="0.8"/>
+  <arg name="model_false_positive_rate" default="0.2"/>
+
+  <!-- Defaults, change only if find it necessary -->
+  <arg name="reference_frame_id"  default="base_link"/>
+  <arg name="publish_map_to_frame_tf"          default="false"/>
+  <arg name="publish_utm_to_map_tf"          default="true"/>
 
   <node name="relative_offset_node" type="relative_offset_transform" pkg="mapless_mcl_ros" output="screen">
     <remap from="/relative/pose" to="/odometry/offset"/>

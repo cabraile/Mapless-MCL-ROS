@@ -9,7 +9,7 @@ Tired of having to remap your city streets in 3D for running your autonomous-dri
 
 This repository contains the implementation of the Mapless Monte-Carlo Localization (or MMCL for short), in which no prior mapping step using an expensive sensor suite is required for localization. In fact, the maps used in this project can be downloaded using the [OpenStreetMap](https://www.openstreetmap.org/) database.
 
-For more details on the method, check out our [paper](resources/paper.pdf), which was submitted to the IV2022 conference and still under review process.
+For more details on the method, check out our [paper](resources/paper.pdf), which was submitted to the IV2022 conference and **still under review process**.
 
 Setup
 =============
@@ -87,45 +87,24 @@ For running the **Carina 2** demonstration, first edit the indicated parameters 
 
 Next, execute `roslaunch mapless_mcl_ros_demos carina_demo` in your favorite command line tool!
 
-How to use
+Preparing the map and the trajectories
 =============
-This approach requires the map to be downloaded and prepared (actually, split) before usage. Some knowledge in GIS will be useful here.
-
-Downloading the map
--------------
-In the [OpenStreetMap website](https://openstreetmap.org), move to a region that is interesting for your application. Make all of the region of interest inside the visualuzation and click in the `Export` button.
-
-![](resources/osm_hints_1.png)
-
-A menu will open on the left side. Click at the `Overpass API` link and wait for your map to be downloaded.
-
-![](resources/osm_hints_2.png)
-
-Separating the road elements
--------------
-The downloaded map contains data from many different elements. For this project, we are still using only the road network elements ~~, however keep tuned for updates!~~. We need, therefore, to split these elements.
-
-One way to do so is to use a GIS software as ArcGIS or QGIS. The latter is a free option that works in Linux systems, so let's stick with it for this tutorial. The installation instructions can be found [here](https://www.qgis.org/en/site/forusers/alldownloads.html).
-
-Open the QGIS software and drag the downloaded map to the user interface window. A window indicating that multiple layers exist will pop up. Click `Select All` and `Ok`. The map elements will be loaded and rendered in the main window.
-
-![](resources/qgis_hints_1.png)
-
-Satellite images will become handy for this application. I would suggest accessing [this tutorial](https://opensourceoptions.com/blog/how-to-add-google-satellite-imagery-and-google-maps-to-qgis/) for enabling the Google Satellite imagery visualization in QGIS. If you include this layer and all the elements disapear, just drag the Satellite layer to the bottom in the left menu.
-
-![](resources/qgis_hints_2.png)
-
-For exporting the road networks in a `geojson` format, right-click the `map lines` in the `Layers` menu, hover `Export` and click at `Save Features As...`. A new window will appear with a lot of options. Fill only the ones indicated in red and click `Ok`.
-
-![](resources/qgis_hints_3.png)
-
-~~Preparing the trajectory (under progress)~~
--------------
-Ideally, the trajectory should be provided by a path planning algorithm. However, our current implementation does not support ~~yet~~ trajectories provided by a ROS node. Instead, the trajectory is provided by another `geojson` file that can also be made using QGIS, so let's get our hands dirty and 'draw' the agent's trajectory in the map.
+Preparing both the map and trajectory requires some knowledge in GIS and the usage of GIS tools. Therefore, we dedicated a detailed tutorial for preparing the maps [here](resources/gis_tutorial.md).
 
 Setting up the launch files
--------------
+=============
+If you are including the `mapless_mcl_ros/launch/run.launch` file to your project, set the following variables in the parent launch file:
+* `map_path`: The absolute path to the road map.
+* `trajectory_path` : The absolute path to the trajectory file.
+* `n_particles` : Sets the number of particles used by the filter.
+* `odom_topic`: The topic that publishes `nav_msgs.Odometry` messages, will serve as input for this project's nodes;
+* `model_sensitivity` (optional): The detection model's sensitivity. In case using the default Darknet ROS parameters, this value does not need to be changed.
+* `model_false_positive_rate` (optional): The detection model's false positive rate. In case using the default Darknet ROS parameters, this value does not need to be changed.
 
 Run
--------------
+=============
+One liner.
 
+```bash
+roslaunch mapless_mcl_ros run.launch
+```
