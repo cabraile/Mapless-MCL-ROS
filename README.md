@@ -79,9 +79,13 @@ Finally, run `docker-compose up` and witness the magic! Of course, you have to r
 
 Demos
 =============
+Currently, only one demo is provided - which is the one used in our proposed paper. We aim to include demonstrations using the Ford AV dataset as well.
 
 Carina 2
 ------------
+For running the **Carina 2** demonstration, first edit the indicated parameters in the `mapless_mcl_ros_demos/launch/carina_demo.launch` file. 
+
+Next, execute `roslaunch mapless_mcl_ros_demos carina_demo` in your favorite command line tool!
 
 How to use
 =============
@@ -118,8 +122,6 @@ For exporting the road networks in a `geojson` format, right-click the `map line
 ~~Preparing the trajectory (under progress)~~
 -------------
 Ideally, the trajectory should be provided by a path planning algorithm. However, our current implementation does not support ~~yet~~ trajectories provided by a ROS node. Instead, the trajectory is provided by another `geojson` file that can also be made using QGIS, so let's get our hands dirty and 'draw' the agent's trajectory in the map.
-
-
 
 Setting up the launch files
 -------------
