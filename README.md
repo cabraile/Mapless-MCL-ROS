@@ -17,8 +17,6 @@ Setup
 Ubuntu
 -------
 
-If you intend on running this project in a docker container, skip to the docker section. On the other hand, you can still peek the dockerfiles (under `./docker`) for guidance on the setup.
-
 **GPU**
 - Unfortunately, this project **REQUIRES** GPU for running the YOLO detection. Make sure you have the NVIDIA drivers installed and CUDA. We used the `cudatoolkit=11.3` in our tests.
 
@@ -55,27 +53,9 @@ If you intend on running this project in a docker container, skip to the docker 
 - `source devel/setup.bash`
 - ... And you are good to go!
 
-Docker (under progress)
+Docker 
 -------
-We prepared dockerfiles for running this project's nodes in case you do not want to set your whole machine up.
-
-One liner image build command:
-```bash
-python3 dockerfile_gen.py --build
-```
-Or, instead, if you want to include the demo files:
-```bash
-python3 dockerfile_gen.py --build --include_demo
-```
-
-When compiled, set a `.env` file with the variables `BAGS_DIR` (the directory to the bags) and `DATA_DIR` (the directory in which the map and trajectory are contained). For instance
-
-```bash
-BAGS_DIR=/home/developer/cool_dataset/bags
-DATA_DIR=/home/developer/cool_dataset/trajectory
-```
-
-Finally, run `docker-compose up` and witness the magic! Of course, you have to run `rviz` first using the configuration file in `mapless_mcl_ros_demos/rviz/carina.rviz` for actually visualizing it.
+**Under progress.**
 
 Demos
 =============
